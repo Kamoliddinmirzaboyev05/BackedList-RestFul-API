@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import Loader from "./components/loader/Loader";
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [plans, setPlans] = useState(null);
@@ -8,7 +9,9 @@ function App() {
   const [info, setInfo] = useState(null);
   const [isDone, setIsDone] = useState(false);
   const [currentID, setCurrentID] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const getData = () => {
+    setIsLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Cookie", "csrftoken=FZh6uobQP243mkcN68Q0BmRU3fvWvZmr");
 
@@ -22,6 +25,7 @@ function App() {
       .then((response) => response.json())
       .then((result) => {
         setPlans(result);
+        setIsLoading(false);
       })
       .catch((error) => console.error(error));
   };
@@ -32,6 +36,7 @@ function App() {
 
   // Postdata function
   const postData = () => {
+    setIsLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Cookie", "csrftoken=FZh6uobQP243mkcN68Q0BmRU3fvWvZmr");
@@ -53,10 +58,12 @@ function App() {
       .then((response) => response.json())
       .then((result) => {
         getData();
+        setIsLoading(false);
         setTitle(null);
         setInfo(null);
         setIsDone(false);
         setShowModal(false);
+        toast.success("The new plan successful added");
       })
       .catch((error) => console.error(error));
   };
@@ -76,6 +83,7 @@ function App() {
       .then((response) => response.text())
       .then((result) => {
         getData();
+        toast.warning("The new plan successful deleted");
       })
       .catch((error) => console.error(error));
   };
@@ -130,11 +138,27 @@ function App() {
         getData();
         setCurrentID(null);
         setShowModal(false);
+        setTitle(null);
+        setInfo(null);
+        setIsDone(false);
       })
       .catch((error) => console.error(error));
   };
   return (
     <header>
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       {showModal && (
         <div className="modal">
           <div className="modal_info">
@@ -202,12 +226,14 @@ function App() {
       <div className="hero">
         <div className="container">
           <div className="plans">
+            {isLoading && <Loader />}
+
             {plans?.map((item) => {
               return (
                 <div key={item.id} className="plan">
                   <div>
-                    <h2>title: {item.sarlavha}</h2>
-                    <p>Malumot: {item.izoh}</p>
+                    <h2>Title: {item.sarlavha}</h2>
+                    <p>Ma`lumot: {item.izoh}</p>
                   </div>
                   <div className="icons">
                     <span>

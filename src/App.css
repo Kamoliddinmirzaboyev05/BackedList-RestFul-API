@@ -41,13 +41,17 @@ nav .container {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 99999999999999;
 }
-
+.plans {
+  position: relative;
+}
 .modal_info {
   width: 300px;
   padding: 20px;
   border: 2px solid black;
   position: relative;
+  z-index: 9999999999;
 }
 
 .modal_info form {
@@ -59,9 +63,18 @@ nav .container {
 .exit {
   position: absolute;
   top: 5px;
+  z-index: 999999;
   right: 5px;
   cursor: pointer;
 }
 span {
   cursor: pointer;
+}
+button{
+  padding: 10px 20px;
+  background-color: #FF3D00;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
 }
