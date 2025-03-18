@@ -62,3 +62,6 @@ nav .container {
   right: 5px;
   cursor: pointer;
 }
+span {
+  cursor: pointer;
+}

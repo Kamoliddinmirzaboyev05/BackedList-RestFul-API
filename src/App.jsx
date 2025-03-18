@@ -30,6 +30,109 @@ function App() {
     getData();
   }, []);
 
+  // Postdata function
+  const postData = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Cookie", "csrftoken=FZh6uobQP243mkcN68Q0BmRU3fvWvZmr");
+
+    const raw = JSON.stringify({
+      sarlavha: title,
+      izoh: info,
+      bajarildi: isDone,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("https://todoeasy.pythonanywhere.com/rejalar/", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        getData();
+        setTitle(null);
+        setInfo(null);
+        setIsDone(false);
+        setShowModal(false);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  // Deletedata function
+  const deleteData = (id) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Cookie", "csrftoken=FZh6uobQP243mkcN68Q0BmRU3fvWvZmr");
+
+    const requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`https://todoeasy.pythonanywhere.com/rejalar/${id}`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        getData();
+      })
+      .catch((error) => console.error(error));
+  };
+
+  // GetOneProduct function
+
+  const getOneProduct = (id) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Cookie", "csrftoken=FZh6uobQP243mkcN68Q0BmRU3fvWvZmr");
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`https://todoeasy.pythonanywhere.com/rejalar/${id}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setTitle(result.sarlavha);
+        setInfo(result.izoh);
+        setIsDone(result.bajarildi);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  // Update Data function
+  const updateData = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Cookie", "csrftoken=FZh6uobQP243mkcN68Q0BmRU3fvWvZmr");
+
+    const raw = JSON.stringify({
+      sarlavha: title,
+      izoh: info,
+      bajarildi: isDone,
+    });
+
+    const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://todoeasy.pythonanywhere.com/rejalar/${currentID}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        getData();
+        setCurrentID(null);
+        setShowModal(false);
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <header>
       {showModal && (
@@ -46,7 +149,11 @@ function App() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                postData();
+                if (currentID) {
+                  updateData();
+                } else {
+                  postData();
+                }
               }}
               action=""
             >
@@ -68,7 +175,7 @@ function App() {
               />
               <label htmlFor="">Bajarildi</label>
               <input
-                value={isDone}
+                checked={isDone}
                 onChange={(e) => {
                   setIsDone(e.target.checked);
                 }}
@@ -97,16 +204,24 @@ function App() {
           <div className="plans">
             {plans?.map((item) => {
               return (
-                <div className="plan">
+                <div key={item.id} className="plan">
                   <div>
                     <h2>title: {item.sarlavha}</h2>
                     <p>Malumot: {item.izoh}</p>
                   </div>
                   <div className="icons">
+                    <span>
+                      <input
+                        disabled
+                        checked={item.bajarildi}
+                        type="checkbox"
+                      />
+                    </span>
                     <span
                       onClick={() => {
                         setShowModal(true);
                         setCurrentID(item.id);
+                        getOneProduct(item.id);
                       }}
                     >
                       ✏️
