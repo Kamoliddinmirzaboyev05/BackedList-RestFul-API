@@ -10,6 +10,7 @@ function App() {
   const [isDone, setIsDone] = useState(false);
   const [currentID, setCurrentID] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Getdata function
   const getData = () => {
     setIsLoading(true);
     const myHeaders = new Headers();
@@ -83,7 +84,7 @@ function App() {
       .then((response) => response.text())
       .then((result) => {
         getData();
-        toast.warning("The new plan successful deleted");
+        toast.warning("The plan successful deleted");
       })
       .catch((error) => console.error(error));
   };
@@ -141,6 +142,7 @@ function App() {
         setTitle(null);
         setInfo(null);
         setIsDone(false);
+        toast.info("The plan successful edited");
       })
       .catch((error) => console.error(error));
   };
